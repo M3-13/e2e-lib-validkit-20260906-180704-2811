@@ -14,6 +14,8 @@ _COUNTRY_CODES = {
 
 _MAX_LENGTH = 1000
 
+_REMOVABLE_FORMAT = "() -."
+
 
 def normalize_phone(text: str, country_code: str) -> str:
     """Normalisiere *text* für *country_code* zu einer E.164-Nummer."""
@@ -29,12 +31,15 @@ def normalize_phone(text: str, country_code: str) -> str:
     if country_number is None:
         raise ValueError("unknown country code")
 
-    digits = "".join(ch for ch in text if ch.isdigit())
+    digits = "".join(ch for ch in text if ch not in _REMOVABLE_FORMAT)
+
+    if not digits or not digits.isdigit():
+        raise ValueError("invalid phone number")
 
     if digits.startswith("0"):
         digits = digits[1:]
 
-    if not digits.isdigit() or len(digits) < 6:
+    if len(digits) < 6:
         raise ValueError("invalid phone number")
 
     return "+" + country_number + digits

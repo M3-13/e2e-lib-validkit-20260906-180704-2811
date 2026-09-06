@@ -63,6 +63,16 @@ def test_no_digits_raises():
         normalize_phone("(  )", "DE")
 
 
+def test_letters_are_not_formatting_raise():
+    with pytest.raises(ValueError):
+        normalize_phone("abc123456", "DE")
+
+
+def test_mixed_alphanumeric_raises():
+    with pytest.raises(ValueError):
+        normalize_phone("(030) 12x4-567", "DE")
+
+
 def test_only_five_digits_raises():
     with pytest.raises(ValueError):
         normalize_phone("12345", "DE")
